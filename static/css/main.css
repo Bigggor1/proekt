@@ -1,0 +1,32 @@
+h1 {
+   color: #fff 
+}
+.main {
+    border-top: dotted 1px #333;
+}
+.undecorated {
+    text-decoration: none;
+}
+}
+.news_list {
+    border-color: #000;
+    border-width: 1px;
+}
+.row_color_up {
+    background-color: #04223c;
+}
+.ssilki_color a {
+    text-decoration: none;
+    color: #000000;
+    font-size: 18px;
+}
+.register-color {
+    background-color: #8d9dd6;
+    border-color: #6a7cbe;
+}
+.ssilki_color:hover {
+    text-decoration: none;
+    background-color: #c3c8cc;
+    color: #000000;
+    cursor: pointer;
+}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<ul>
+    {% for i in data['articles'] %}
+    <li>{{ i['title'] }}</li>
+    {% endfor %}</ul>
+</body>
+{% endblock %}
