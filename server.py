@@ -44,6 +44,8 @@ def top_headlines(params):
 @app.route('/news_main')
 def news_main():
     form = SearchForm()
+    if form.submit():
+        redirect(f'/news_find/{form.search.data}')
     request_top_headlines = {'apiKey': '162e6651da2c4734b2cfa2d940a47cc5',
                              'url': 'https://newsapi.org/v2/top-headlines',
                              'country': 'ru', 'category': 'general'}
@@ -54,6 +56,8 @@ def news_main():
 @app.route('/news_main/<category>')
 def news_main_category(category):
     form = SearchForm()
+    if form.submit():
+        redirect(f'/news_find/{form.search.data}')
     request_top_headlines = {'apiKey': '162e6651da2c4734b2cfa2d940a47cc5',
                              'url': 'https://newsapi.org/v2/top-headlines',
                              'country': 'ru', 'category': category}
@@ -65,10 +69,11 @@ def news_main_category(category):
 def news_find(q):
     form = SearchForm()
     if form.submit():
-        request_everything = {'apiKey': '162e6651da2c4734b2cfa2d940a47cc5', 'url': 'https://newsapi.org/v2/everything',
-                              'q': form.search.data, 'language': 'en', 'sortBy': 'popularity'}
-        data = everything(request_everything)
-        return render_template('news_find.html', data=data, form=form)
+        redirect(f'/news_find/{form.search.data}')
+    request_everything = {'apiKey': '162e6651da2c4734b2cfa2d940a47cc5', 'url': 'https://newsapi.org/v2/everything',
+                          'q': q, 'language': 'ru', 'sortBy': 'popularity'}
+    data = everything(request_everything)
+    return render_template('news_find.html', data=data, form=form)
 
 
 @login_manager.user_loader
