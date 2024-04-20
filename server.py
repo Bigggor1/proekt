@@ -3,7 +3,7 @@ import datetime
 from flask import Flask, render_template, redirect
 import requests
 from flask_login import LoginManager, login_user, logout_user, login_required
-from forms.user import RegisterForm, LoginForm
+from forms.user import RegisterForm, LoginForm, SearchForm
 from data import db_session
 from data.users import User
 
@@ -43,28 +43,32 @@ def top_headlines(params):
 @app.route('/')
 @app.route('/news_main')
 def news_main():
+    form = SearchForm()
     request_top_headlines = {'apiKey': '162e6651da2c4734b2cfa2d940a47cc5',
                              'url': 'https://newsapi.org/v2/top-headlines',
                              'country': 'ru', 'category': 'general'}
     data = top_headlines(request_top_headlines)
-    return render_template('news_main.html', data=data, title='Главная страница')
+    return render_template('news_main.html', data=data, title='Главная страница', form=form)
 
 
 @app.route('/news_main/<category>')
 def news_main_category(category):
+    form = SearchForm()
     request_top_headlines = {'apiKey': '162e6651da2c4734b2cfa2d940a47cc5',
                              'url': 'https://newsapi.org/v2/top-headlines',
                              'country': 'ru', 'category': category}
     data = top_headlines(request_top_headlines)
-    return render_template('news_main.html', data=data, title='Главная страница')
+    return render_template('news_main.html', data=data, title='Главная страница', form=form)
 
 
 @app.route('/news_find/<q>')
 def news_find(q):
-    request_everything = {'apiKey': '162e6651da2c4734b2cfa2d940a47cc5', 'url': 'https://newsapi.org/v2/everything',
-                          'q': q, 'language': 'ru', 'sortBy': 'popularity'}
-    data = everything(request_everything)
-    return render_template('news_find.html', data=data)
+    form = SearchForm()
+    if form.submit():
+        request_everything = {'apiKey': '162e6651da2c4734b2cfa2d940a47cc5', 'url': 'https://newsapi.org/v2/everything',
+                              'q': form.search.data, 'language': 'en', 'sortBy': 'popularity'}
+        data = everything(request_everything)
+        return render_template('news_find.html', data=data, form=form)
 
 
 @login_manager.user_loader
