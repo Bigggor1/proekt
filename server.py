@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from flask import Flask, render_template, redirect
 import requests
@@ -26,8 +27,8 @@ def everything(params):
                        f'q={params['q']}&'
                        f'language={params['language']}&'
                        f'sortBy={params['sortBy']}')
-    json = req.json()
-    return json
+    json_req = req.json()
+    return json_req
 
 
 # новости для главной страницы по категории
@@ -36,8 +37,19 @@ def top_headlines(params):
                        f'apiKey={params['apiKey']}&'
                        f'country={params['country']}&'
                        f'category={params['category']}')
-    json = req.json()
-    return json
+    json_req = req.json()
+    return json_req
+
+
+def weather_by_ll(ll):
+    lat = ll.split(',')[0]
+    lon = ll.split(',')[1]
+    url_yandex = f'https://api.weather.yandex.ru/v2/informers/?lat={lat}&lon={lon}&[lang=ru_RU]'
+    yandex_req = requests.get(url_yandex, headers={'X-Yandex-API-Key': '31edec50-cbef-4e12-a56f-8414eb65f234'},
+                              verify=False)
+    yandex_json = json.loads(yandex_req.text)
+    return {'image': f'https://yastatic.net/weather/i/icons/funky/dark/{yandex_json['fact']['icon']}.svg',
+            'temp': yandex_json['fact']['temp'], 'feels_like': yandex_json['fact']['feels_like']}
 
 
 @app.route('/')
