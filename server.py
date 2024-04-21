@@ -1,12 +1,13 @@
 import datetime
 import json
 
-from flask import Flask, render_template, redirect
 import requests
+from flask import Flask, render_template, redirect
 from flask_login import LoginManager, login_user, logout_user, login_required
-from forms.user import RegisterForm, LoginForm, SearchForm
+
 from data import db_session
 from data.users import User
+from forms.user import RegisterForm, LoginForm, SearchForm
 
 # сервер ставится
 app = Flask(__name__)
@@ -39,6 +40,26 @@ def top_headlines(params):
                        f'category={params['category']}')
     json_req = req.json()
     return json_req
+
+
+def toponym_by_geocode(geocode):
+    yandex_req = requests.get(
+        f'http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode={geocode}&lang=en_US'
+        f'&format=json')
+    yandex_json = yandex_req.json()
+
+    toponym = yandex_json["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+    toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]["Address"]
+    toponym_coodrinates = toponym["Point"]["pos"]
+
+    return {'address': toponym_address, 'cords': toponym_coodrinates.replace(' ', ',')}
+
+
+def urlImage_by_ll(ll, toponym):
+    yandex_req = requests.get(
+        f'http://static-maps.yandex.ru/1.x/?ll={ll}&spn=10,1&size=600,300&l=map&pt={toponym['cords']},flag')
+
+    return yandex_req.url
 
 
 def weather_by_ll(ll):
