@@ -1,3 +1,22 @@
+.d1 {
+  background-color: #e9f0f7;
+}
+.li-ssilki {text-decoration: none;
+    color: #000000;
+}
+.container-body {
+    background-color: #e9f0f7;
+}
+.li-color {
+    padding: 5px;
+    margin-top: 10px;
+}
+.li-color:hover {
+    border: 2px solid #04223c;
+    background-color: #e9f0f7;
+    padding: 5px;
+    margin-top: 8px;
+}
 h1 {
    color: #fff 
 }
