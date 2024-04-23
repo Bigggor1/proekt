@@ -23,3 +23,7 @@ class LoginForm(FlaskForm):
 class SearchForm(FlaskForm):
     search = StringField('Запрос', validators=[DataRequired()])
     submit = SubmitField('Поиск')
+
+class GeoForm(FlaskForm):
+    search = StringField('Запрос', validators=[DataRequired()])
+    submit = SubmitField('Поиск')

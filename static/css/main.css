@@ -1,7 +1,17 @@
+.but
+{
+    font-size: 13px;
+    color: #ffffff;
+}
+.search-form {
+  margin-top: 10px;
+  width: 50%;
+}
 .d1 {
   background-color: #e9f0f7;
 }
-.li-ssilki {text-decoration: none;
+.li-ssilki {
+    text-decoration: none;
     color: #000000;
 }
 .container-body {

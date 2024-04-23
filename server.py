@@ -7,7 +7,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required
 
 from data import db_session
 from data.users import User
-from forms.user import RegisterForm, LoginForm, SearchForm
+from forms.user import RegisterForm, LoginForm, SearchForm, GeoForm
 
 # сервер ставится
 app = Flask(__name__)
@@ -23,21 +23,21 @@ db_session.global_init("db/blogs.db")
 
 # поиск новостей по списку параметров
 def everything(params):
-    req = requests.get(f'{params['url']}?'
-                       f'apiKey={params['apiKey']}&'
-                       f'q={params['q']}&'
-                       f'language={params['language']}&'
-                       f'sortBy={params['sortBy']}')
+    req = requests.get(f'{params["url"]}?'
+                       f'apiKey={params["apiKey"]}&'
+                       f'q={params["q"]}&'
+                       f'language={params["language"]}&'
+                       f'sortBy={params["sortBy"]}')
     json_req = req.json()
     return json_req
 
 
 # новости для главной страницы по категории
 def top_headlines(params):
-    req = requests.get(f'{params['url']}?'
-                       f'apiKey={params['apiKey']}&'
-                       f'country={params['country']}&'
-                       f'category={params['category']}')
+    req = requests.get(f'{params["url"]}?'
+                       f'apiKey={params["apiKey"]}&'
+                       f'country={params["country"]}&'
+                       f'category={params["category"]}')
     json_req = req.json()
     return json_req
 
@@ -57,7 +57,7 @@ def toponym_by_geocode(geocode):
 
 def urlImage_by_ll(ll, toponym):
     yandex_req = requests.get(
-        f'http://static-maps.yandex.ru/1.x/?ll={ll}&spn=10,1&size=600,300&l=map&pt={toponym['cords']},flag')
+        f'http://static-maps.yandex.ru/1.x/?ll={ll}&spn=10,1&size=600,300&l=map&pt={toponym["cords"]},flag')
 
     return yandex_req.url
 
@@ -69,42 +69,43 @@ def weather_by_ll(ll):
     yandex_req = requests.get(url_yandex, headers={'X-Yandex-API-Key': '31edec50-cbef-4e12-a56f-8414eb65f234'},
                               verify=False)
     yandex_json = json.loads(yandex_req.text)
-    return {'image': f'https://yastatic.net/weather/i/icons/funky/dark/{yandex_json['fact']['icon']}.svg',
-            'temp': yandex_json['fact']['temp'], 'feels_like': yandex_json['fact']['feels_like']}
+    return {'image': f"https://yastatic.net/weather/i/icons/funky/dark/{yandex_json['fact']['icon']}.svg",
+            'temp': yandex_json["fact"]['temp'], 'feels_like': yandex_json['fact']['feels_like']}
 
 
-@app.route('/')
-@app.route('/news_main')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/news_main', methods=['GET', 'POST'])
 def news_main():
+    geoform = GeoForm()
     form = SearchForm()
-    if form.submit():
-        redirect(f'/news_find/{form.search.data}')
+    if form.validate_on_submit():
+        return redirect(f'/news_find/{form.search.data}')
     request_top_headlines = {'apiKey': '162e6651da2c4734b2cfa2d940a47cc5',
                              'url': 'https://newsapi.org/v2/top-headlines',
-                             'country': 'ru', 'category': 'general'}
+                             'country': 'us', 'category': 'general'}
     data = top_headlines(request_top_headlines)
     return render_template('news_main.html', data=data, title='Главная страница', form=form)
 
 
-@app.route('/news_main/<category>')
+@app.route('/news_main/<category>', methods=['GET', 'POST'])
 def news_main_category(category):
     form = SearchForm()
-    if form.submit():
-        redirect(f'/news_find/{form.search.data}')
+    if form.validate_on_submit():
+        return redirect(f'/news_find/{form.search.data}')
     request_top_headlines = {'apiKey': '162e6651da2c4734b2cfa2d940a47cc5',
                              'url': 'https://newsapi.org/v2/top-headlines',
-                             'country': 'ru', 'category': category}
+                             'country': 'us', 'category': category}
     data = top_headlines(request_top_headlines)
     return render_template('news_main.html', data=data, title='Главная страница', form=form)
 
 
-@app.route('/news_find/<q>')
+@app.route('/news_find/<q>', methods=['GET', 'POST'])
 def news_find(q):
     form = SearchForm()
-    if form.submit():
-        redirect(f'/news_find/{form.search.data}')
+    if form.validate_on_submit():
+        return redirect(f'/news_find/{form.search.data}')
     request_everything = {'apiKey': '162e6651da2c4734b2cfa2d940a47cc5', 'url': 'https://newsapi.org/v2/everything',
-                          'q': q, 'language': 'ru', 'sortBy': 'popularity'}
+                          'q': q, 'language': 'en', 'sortBy': 'popularity'}
     data = everything(request_everything)
     return render_template('news_find.html', data=data, form=form)
 
