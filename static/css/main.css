@@ -1,7 +1,6 @@
-.but
-{
-    font-size: 13px;
-    color: #ffffff;
+.name {
+  color: #fff;
+  font-size: 20px;
 }
 .search-form {
   margin-top: 10px;

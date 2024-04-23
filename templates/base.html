@@ -19,7 +19,9 @@
             {% block search %}{% endblock %}
           </div>
           {% if current_user.is_authenticated %}
-            <a href="/logout">{{ current_user.name }}</a>
+            <div class="col-2 d-flex justify-content-center align-items-center">
+              <a href="/logout" class="undecorated name">{{ current_user.name }}</a>
+            </div>
           {% else %}
             <div class="col d-flex justify-content-center align-items-center">
               <a class="btn btn-primary register-color" href="/register">Регистрация</a>
