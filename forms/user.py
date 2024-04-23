@@ -5,25 +5,25 @@ from wtforms.validators import DataRequired
 
 
 class RegisterForm(FlaskForm):
-    email = EmailField('Почта', validators=[DataRequired()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
-    password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
-    name = StringField('Имя пользователя', validators=[DataRequired()])
-    about = TextAreaField("Немного о себе")
-    submit = SubmitField('Войти')
+    email = EmailField('Mail', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password_again = PasswordField('Repeat the password', validators=[DataRequired()])
+    name = StringField('Username', validators=[DataRequired()])
+    about = TextAreaField("A little bit about yourself")
+    submit = SubmitField('Log in')
 
 
 class LoginForm(FlaskForm):
-    email = EmailField('Почта', validators=[DataRequired()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
-    remember_me = BooleanField('Запомнить меня')
-    submit = SubmitField('Войти')
+    email = EmailField('Mail', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember me')
+    submit = SubmitField('Log in')
 
 
 class SearchForm(FlaskForm):
-    search = StringField('Запрос', validators=[DataRequired()])
-    submit = SubmitField('Поиск')
+    search = StringField('Request', validators=[DataRequired()])
+    submit = SubmitField('Search')
 
 class GeoForm(FlaskForm):
-    search = StringField('Запрос', validators=[DataRequired()])
-    submit = SubmitField('Поиск')
+    search = StringField('Request', validators=[DataRequired()])
+    submit = SubmitField('Search')

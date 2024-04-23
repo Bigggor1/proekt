@@ -18,7 +18,9 @@
 <body>
 <ul>
     {% for i in data['articles'] %}
-    <li class='li-color'><a href='{{ i['url'] }}' class="li-ssilki">{{ i['title'] }}</a></li>
+    {% if i['title'] != '[Removed]' %}
+        <li class='li-color'><a href="{{ i['url'] }}" class="li-ssilki">{{ i['title'] }}</a></li>
+    {% endif %}
     {% endfor %}</ul>
 </body>
 {% endblock %}
