@@ -79,7 +79,7 @@ def news_main():
     geoform = GeoForm()
     if geoform.validate_on_submit():
         toponym = geoform.search.data
-        geoinfo = {'map': url_image_by_ll(toponym['cords']), 'address': toponym['address']['formatted'],
+        geoform.geoinfo = {'map': url_image_by_ll(toponym['cords']), 'address': toponym['address']['formatted'],
                    'image': weather_by_ll(toponym['cords'])}
     form = SearchForm()
     if form.validate_on_submit():
@@ -88,7 +88,7 @@ def news_main():
                              'url': 'https://newsapi.org/v2/top-headlines',
                              'country': 'us', 'category': 'general'}
     data = top_headlines(request_top_headlines)
-    return render_template('news_main.html', data=data, title='Main page', form=form, geoinfo=geoinfo, geoform=geoform)
+    return render_template('news_main.html', data=data, title='Main page', form=form, geoform=geoform)
 
 
 @app.route('/news_main/<category>', methods=['GET', 'POST'])
@@ -96,7 +96,7 @@ def news_main_category(category):
     geoform = GeoForm()
     if geoform.validate_on_submit():
         toponym = geoform.search.data
-        geoinfo = {'map': url_image_by_ll(toponym['cords']), 'address': toponym['address']['formatted'],
+        geoform.geoinfo = {'map': url_image_by_ll(toponym['cords']), 'address': toponym['address']['formatted'],
                    'image': weather_by_ll(toponym['cords'])}
     form = SearchForm()
     if form.validate_on_submit():
@@ -105,7 +105,7 @@ def news_main_category(category):
                              'url': 'https://newsapi.org/v2/top-headlines',
                              'country': 'us', 'category': category}
     data = top_headlines(request_top_headlines)
-    return render_template('news_main.html', data=data, title='Main page', form=form, geoinfo=geoinfo, geoform=geoform)
+    return render_template('news_main.html', data=data, title='Main page', form=form, geoform=geoform)
 
 
 @app.route('/news_find/<q>', methods=['GET', 'POST'])
@@ -113,7 +113,7 @@ def news_find(q):
     geoform = GeoForm()
     if geoform.validate_on_submit():
         toponym = geoform.search.data
-        geoinfo = {'map': url_image_by_ll(toponym['cords']), 'address': toponym['address']['formatted'],
+        geoform.geoinfo = {'map': url_image_by_ll(toponym['cords']), 'address': toponym['address']['formatted'],
                    'image': weather_by_ll(toponym['cords'])}
     form = SearchForm()
     if form.validate_on_submit():
@@ -121,7 +121,7 @@ def news_find(q):
     request_everything = {'apiKey': '162e6651da2c4734b2cfa2d940a47cc5', 'url': 'https://newsapi.org/v2/everything',
                           'q': q, 'language': 'en', 'sortBy': 'popularity'}
     data = everything(request_everything)
-    return render_template('news_find.html', data=data, form=form, geoinfo=geoinfo, geoform=geoform)
+    return render_template('news_find.html', data=data, form=form, geoform=geoform)
 
 
 @login_manager.user_loader

@@ -27,3 +27,4 @@ class SearchForm(FlaskForm):
 class GeoForm(FlaskForm):
     search = StringField('Request', validators=[DataRequired()])
     submit = SubmitField('Search')
+    geoinfo = {}
