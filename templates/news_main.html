@@ -10,6 +10,27 @@
 </form>
 {% endblock %}
 
+{% block gorod %}
+<form action="" class='search-form2' method="post">
+  {{ form.hidden_tag() }}
+  <div class="input-group mb-3 search-form2">
+    {{ geoform.geosearch(class="form-control", placeholder="Your city...") }}
+    {{ geoform.geosubmit(type="submit", class="btn btn-outline-dark", id="button-addon2") }}
+  </div>
+  <img src="{{ geoform.geoinfo['map'] }}"></img>
+  <strong>{{ geoform.geoinfo['address'] }}</strong>
+  <div class="row">
+    <div class="col-3">
+      <img src="{{ geoform.geoinfo['image']['image'] }}" width="50px"></img>
+    </div>
+    <div class="col">
+      Temperature: <i>{{ geoform.geoinfo['image']['temp'] }} &deg;C</i><br>
+      Feels like: <i>{{ geoform.geoinfo['image']['feels_like'] }} &deg;C</i>
+    </div>
+  </div>
+</form>
+{% endblock %}
+
 {% block content %}
 <html lang="en">
 <head>

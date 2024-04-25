@@ -2,6 +2,8 @@ import datetime
 import json
 
 import requests
+
+from flask import make_response, jsonify
 from flask import Flask, render_template, redirect
 from flask_login import LoginManager, login_user, logout_user, login_required
 
@@ -55,9 +57,9 @@ def toponym_by_geocode(geocode):
     return {'address': toponym_address, 'cords': toponym_coodrinates.replace(' ', ',')}
 
 
-def url_image_by_ll(ll, toponym):
+def url_image_by_ll(ll):
     yandex_req = requests.get(
-        f'http://static-maps.yandex.ru/1.x/?ll={ll}&spn=10,1&size=600,300&l=map&pt={toponym["cords"]},flag')
+        f'http://static-maps.yandex.ru/1.x/?ll={ll}&spn=10,1&size=200,200&l=map&pt={ll},flag')
 
     return yandex_req.url
 
@@ -66,7 +68,7 @@ def weather_by_ll(ll):
     lat = ll.split(',')[0]
     lon = ll.split(',')[1]
     url_yandex = f'https://api.weather.yandex.ru/v2/informers/?lat={lat}&lon={lon}&[lang=ru_RU]'
-    yandex_req = requests.get(url_yandex, headers={'X-Yandex-API-Key': '31edec50-cbef-4e12-a56f-8414eb65f234'},
+    yandex_req = requests.get(url_yandex, headers={'X-Yandex-API-Key': '62f37a33-af1c-4e51-ae2d-01654efffd32'},
                               verify=False)
     yandex_json = json.loads(yandex_req.text)
     return {'image': f"https://yastatic.net/weather/i/icons/funky/dark/{yandex_json['fact']['icon']}.svg",
@@ -77,10 +79,24 @@ def weather_by_ll(ll):
 @app.route('/news_main', methods=['GET', 'POST'])
 def news_main():
     geoform = GeoForm()
-    if geoform.validate_on_submit():
-        toponym = geoform.search.data
+    try:
+        start_toponym = toponym_by_geocode('Antalia')
+        geoform.geoinfo = {
+            'map': url_image_by_ll(start_toponym['cords']),
+            'address': start_toponym['address']['formatted'],
+            'image': weather_by_ll(start_toponym['cords'])
+        }
+        if geoform.validate_on_submit():
+            geocode = geoform.geosearch.data
+            toponym = toponym_by_geocode(geocode)
+            geoinfo = {'map': url_image_by_ll(toponym['cords']), 'address': toponym['address']['formatted'],
+                       'image': weather_by_ll(toponym['cords'])}
+            geoform.geoinfo = geoinfo
+    except:
+        geocode = geoform.geosearch.data
+        toponym = toponym_by_geocode(geocode)
         geoform.geoinfo = {'map': url_image_by_ll(toponym['cords']), 'address': toponym['address']['formatted'],
-                   'image': weather_by_ll(toponym['cords'])}
+                           'image': 'error'}
     form = SearchForm()
     if form.validate_on_submit():
         return redirect(f'/news_find/{form.search.data}')
@@ -94,10 +110,24 @@ def news_main():
 @app.route('/news_main/<category>', methods=['GET', 'POST'])
 def news_main_category(category):
     geoform = GeoForm()
-    if geoform.validate_on_submit():
-        toponym = geoform.search.data
+    try:
+        start_toponym = toponym_by_geocode('Antalia')
+        geoform.geoinfo = {
+            'map': url_image_by_ll(start_toponym['cords']),
+            'address': start_toponym['address']['formatted'],
+            'image': weather_by_ll(start_toponym['cords'])
+        }
+        if geoform.validate_on_submit():
+            geocode = geoform.geosearch.data
+            toponym = toponym_by_geocode(geocode)
+            geoinfo = {'map': url_image_by_ll(toponym['cords']), 'address': toponym['address']['formatted'],
+                       'image': weather_by_ll(toponym['cords'])}
+            geoform.geoinfo = geoinfo
+    except:
+        geocode = geoform.geosearch.data
+        toponym = toponym_by_geocode(geocode)
         geoform.geoinfo = {'map': url_image_by_ll(toponym['cords']), 'address': toponym['address']['formatted'],
-                   'image': weather_by_ll(toponym['cords'])}
+                           'image': 'error'}
     form = SearchForm()
     if form.validate_on_submit():
         return redirect(f'/news_find/{form.search.data}')
@@ -111,10 +141,24 @@ def news_main_category(category):
 @app.route('/news_find/<q>', methods=['GET', 'POST'])
 def news_find(q):
     geoform = GeoForm()
-    if geoform.validate_on_submit():
-        toponym = geoform.search.data
+    try:
+        start_toponym = toponym_by_geocode('Antalia')
+        geoform.geoinfo = {
+            'map': url_image_by_ll(start_toponym['cords']),
+            'address': start_toponym['address']['formatted'],
+            'image': weather_by_ll(start_toponym['cords'])
+        }
+        if geoform.validate_on_submit():
+            geocode = geoform.geosearch.data
+            toponym = toponym_by_geocode(geocode)
+            geoinfo = {'map': url_image_by_ll(toponym['cords']), 'address': toponym['address']['formatted'],
+                       'image': weather_by_ll(toponym['cords'])}
+            geoform.geoinfo = geoinfo
+    except:
+        geocode = geoform.geosearch.data
+        toponym = toponym_by_geocode(geocode)
         geoform.geoinfo = {'map': url_image_by_ll(toponym['cords']), 'address': toponym['address']['formatted'],
-                   'image': weather_by_ll(toponym['cords'])}
+                           'image': 'error'}
     form = SearchForm()
     if form.validate_on_submit():
         return redirect(f'/news_find/{form.search.data}')
@@ -168,6 +212,17 @@ def reqister():
         db_sess.commit()
         return redirect('/login')
     return render_template('register.html', title='Register', form=form)
+
+
+@app.route('/api/news/<req>', methods=['GET'])
+def get_news(req):
+    try:
+        request_everything = {'apiKey': '162e6651da2c4734b2cfa2d940a47cc5', 'url': 'https://newsapi.org/v2/everything',
+                              'q': req, 'language': 'en', 'sortBy': 'popularity'}
+        data = everything(request_everything)
+        return data
+    except:
+        return make_response(jsonify({'error': 'Bad request'}), 400)
 
 
 @app.route('/logout')

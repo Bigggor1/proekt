@@ -25,6 +25,6 @@ class SearchForm(FlaskForm):
     submit = SubmitField('Search')
 
 class GeoForm(FlaskForm):
-    search = StringField('Request', validators=[DataRequired()])
-    submit = SubmitField('Search')
+    geosearch = StringField('Request', validators=[DataRequired()])
+    geosubmit = SubmitField('Search')
     geoinfo = {}
