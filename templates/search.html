@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block search %}
+{{ form }}
+<form action="" method="post">
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.search.label }} <br>
+    {{ form.search(class="form-control") }}
+  </p>
+  <p>
+    {{ form.submit(type="submit" class="but") }}
+  </p>
+</form>
+{% endblock %}
